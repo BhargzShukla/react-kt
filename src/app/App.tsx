@@ -8,26 +8,33 @@ async function getAllTodos() {
   return await fetchApi(url);
 }
 
-function Checkbox({label, checked, toggleChecked, uniqueId}) {
+function Checkbox({label, checked, toggleChecked, uniqueId, deleteTodo}) {
   return (
-    <div
-      key={uniqueId}
-      className="flex items-center justify-start gap-2">
-      <input
-        type="checkbox"
-        name={`item_${uniqueId}`}
-        id={`item_${uniqueId}`}
-        checked={checked}
-        onChange={e => toggleChecked(e.target.value)}
-        value={uniqueId}
-      />
-      <label
-        htmlFor={`item_${uniqueId}`}
-        className={`${
-          checked ? "line-through" : ""
-        } uppercase font-light text-gray-700`}>
-        {label}
-      </label>
+    <div className="flex items-center justify-between gap-8">
+      <div
+        key={uniqueId}
+        className="flex items-center justify-start gap-2">
+        <input
+          type="checkbox"
+          name={`item_${uniqueId}`}
+          id={`item_${uniqueId}`}
+          checked={checked}
+          onChange={e => toggleChecked(e.target.value)}
+          value={uniqueId}
+        />
+        <label
+          htmlFor={`item_${uniqueId}`}
+          className={`${
+            checked ? "line-through" : ""
+          } uppercase font-light text-gray-700`}>
+          {label}
+        </label>
+      </div>
+      <button
+        className="px-2 py-0.5 bg-gray-200 text-red-400 font-extrabold rounded-sm hover:bg-gray-300"
+        onClick={() => deleteTodo(uniqueId)}>
+        X
+      </button>
     </div>
   );
 }
@@ -76,6 +83,9 @@ function App() {
     evt.preventDefault();
   }, []);
 
+  let handleDelete = id =>
+    updateTodos(prevValue => prevValue.filter(todo => todo.id !== id));
+
   return (
     <main className="w-full h-full">
       <form
@@ -107,6 +117,7 @@ function App() {
             label={content}
             checked={complete}
             toggleChecked={handleToggle}
+            deleteTodo={handleDelete}
           />
         ))}
       </div>
