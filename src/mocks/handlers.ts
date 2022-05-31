@@ -16,13 +16,26 @@ let initialTodos: TodoItem[] = [
   {
     id: uuid4(),
     content: "Make typing fail",
-    complete: false
+    complete: true
   }
 ];
 
 export const handlers = [
   rest.get("https://fake.backend/todos", (req, res, ctx) => {
-    // throw new Error("Could not connect to the database.");
-    return res(ctx.json(initialTodos), ctx.status(200));
+    let successResponse = res(
+      ctx.status(200),
+      ctx.json({data: {initialTodos}, error: null}),
+      ctx.delay(1000)
+    );
+    let errorResponse = res(
+      ctx.status(500),
+      ctx.json({
+        data: {initialTodos: null},
+        error: {message: "Could not connect to the database!"}
+      }),
+      ctx.delay(1000)
+    );
+    return successResponse;
+    // return errorResponse;
   })
 ];
